@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Prvious\Filament\Combobox\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class ComboboxCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-combobox';
 
     public $description = 'My command';
 

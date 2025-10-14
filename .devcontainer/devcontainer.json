@@ -1,0 +1,124 @@
+// https://aka.ms/devcontainer.json
+{
+    "name": "combobox",
+    "service": "combobox",
+    "workspaceFolder": "/app",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "laravel.vscode-laravel",
+                "christian-kohler.path-intellisense",
+                "bmewburn.vscode-intelephense-client",
+                "open-southeners.laravel-pint",
+                "MehediDracula.php-namespace-resolver",
+                "eamodio.gitlens",
+                "mhutchie.git-graph",
+                "vscode-icons-team.vscode-icons",
+                "esbenp.prettier-vscode",
+                "devsense.composer-php-vscode",
+                "ms-azuretools.vscode-docker",
+                "bradlc.vscode-tailwindcss",
+                "sperovita.alpinejs-syntax-highlight",
+                "github.copilot"
+            ],
+            "settings": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "[blade]": {
+                    "editor.autoClosingBrackets": "always",
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true,
+                    "editor.formatOnSaveMode": "file"
+                },
+                "laravel-pint.enable": true,
+                "[php]": {
+                    // "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+                    "editor.defaultFormatter": "open-southeners.laravel-pint"
+                },
+                "[yaml]": {
+                    "editor.insertSpaces": true,
+                    "editor.tabSize": 4,
+                    "editor.indentSize": "tabSize",
+                    "editor.detectIndentation": false,
+                    "editor.guides.indentation": false,
+                    "editor.autoIndent": "advanced",
+                    "diffEditor.ignoreTrimWhitespace": false
+                },
+                "prettier.documentSelectors": [
+                    "**/*.blade.php"
+                ],
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": "never"
+                },
+                "editor.detectIndentation": false,
+                "editor.formatOnSave": true,
+                "editor.formatOnSaveMode": "file",
+                "editor.tabSize": 4,
+                "emmet.includeLanguages": {
+                    "blade": "html"
+                },
+                "emmet.triggerExpansionOnTab": true,
+                "files.associations": {
+                    "*.blade.php": "blade",
+                    "*.css": "tailwindcss"
+                },
+                "files.autoSave": "onFocusChange",
+                "files.insertFinalNewline": true,
+                "files.trimFinalNewlines": true,
+                "files.trimTrailingWhitespace": true,
+                "files.watcherExclude": {
+                    "**/.git/objects/**": true,
+                    "**/.git/subtree-cache/**": true,
+                    "**/env/**": true,
+                    "**/node_modules/**": true,
+                    "**/venv/**": true,
+                    "env-*": true
+                },
+                "intelephense.format.braces": "per",
+                "php.suggest.basic": false,
+                "search.exclude": {
+                    "**/_ide_helper.php": true,
+                    "**/_ide_helper_models.php": true,
+                    "**/.phpstorm.meta.php": true,
+                    "**/composer.lock": true,
+                    "**/dist": true,
+                    "**/node_modules": true,
+                    "**/package-lock.json": true,
+                    "**/public/{[^i],?[^n]}*": true, // Hide everything in /public, except "index.php"
+                    "**/storage": true,
+                    "**/vendor/{[^l],?[^a]}*": true, // Hide everything in /vendor, except the "laravel"
+                    ".phpunit.result.cache": true
+                },
+                "search.useIgnoreFiles": true,
+                "tailwindCSS.experimental.classRegex": [
+                    [
+                        "@?class\\(([^)]*)\\)",
+                        "['|\"]([^'\"]*)['|\"]"
+                    ],
+                    [
+                        "@?tw\\(([^)]*)\\)",
+                        "['|\"]([^'\"]*)['|\"]"
+                    ],
+                    [
+                        ".*-class=['\"]([^'\"]*)"
+                    ],
+                    "(?:\"|')class(?:\"|')[\\s]*=>[\\s]*(?:\"|')([^\"']*)"
+                ],
+                "tailwindCSS.classAttributes": [
+                    "class",
+                    "className",
+                    "ngClass",
+                    "class:list",
+                    "tw",
+                    ".*-class"
+                ]
+            }
+        }
+    },
+    "remoteUser": "deploy",
+    "shutdownAction": "stopCompose"
+    // "forwardPorts": [],
+    // "runServices": [],
+}

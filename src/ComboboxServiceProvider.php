@@ -10,7 +10,6 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
-use Prvious\Filament\Combobox\Commands\ComboboxCommand;
 use Prvious\Filament\Combobox\Testing\TestsCombobox;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -33,21 +32,8 @@ class ComboboxServiceProvider extends PackageServiceProvider
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('prvious/filament-combobox');
             });
-
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
@@ -111,9 +97,7 @@ class ComboboxServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
-        return [
-            ComboboxCommand::class,
-        ];
+        return [];
     }
 
     /**
@@ -145,8 +129,6 @@ class ComboboxServiceProvider extends PackageServiceProvider
      */
     protected function getMigrations(): array
     {
-        return [
-            'create_filament-combobox_table',
-        ];
+        return [];
     }
 }

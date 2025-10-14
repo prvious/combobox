@@ -25,6 +25,12 @@ FilamentPHP combobox form field package (`prvious/filament-combobox`)
 -   `workbench/` - Development environment
 -   Build assets: `d pnpm build`
 
+## Docker Environment
+
+-   **ALWAYS prefix commands with `d`** - All terminal/CLI commands must use the `d` function
+-   Examples: `d composer install`, `d php artisan migrate`, `d pnpm install`, `d vendor/bin/pest`
+-   The `d` function handles Docker container execution automatically
+
 ## Important Notes
 
 -   Never commit built assets to version control

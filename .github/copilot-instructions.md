@@ -4,6 +4,13 @@
 
 FilamentPHP v3 combobox form field package for Laravel
 
+## Docker Environment
+
+**CRITICAL: Always prefix ALL commands with `d`**
+
+-   Use `d composer install`, `d php artisan serve`, `d vendor/bin/pest`
+-   Never run bare commands like `composer` or `php` - always use `d`
+
 ## Code Style
 
 -   PHP 8.1+ with typed properties and return types

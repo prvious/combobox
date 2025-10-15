@@ -3,6 +3,7 @@
 namespace Prvious\Filament\Combobox;
 
 use Filament\Support\Assets\AlpineComponent;
+use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Livewire\Features\SupportTesting\Testable;
 use Prvious\Filament\Combobox\Testing\TestsCombobox;
@@ -21,8 +22,10 @@ class ComboboxServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            AlpineComponent::make('combobox', __DIR__ . '/../dist/components/combobox.js'),
-        ], 'prvious-combobox');
+            AlpineComponent::make('combobox', __DIR__ . '/../resources/dist/components/combobox.js'),
+            Css::make('combobox', __DIR__ . '/../resources/dist/components/combobox.css')
+                ->loadedOnRequest(),
+        ], 'prvious/filament-combobox');
 
         Testable::mixin(new TestsCombobox);
     }

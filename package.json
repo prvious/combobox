@@ -3,10 +3,15 @@
     "type": "module",
     "scripts": {
         "dev": "node bin/build.js --dev",
-        "build": "node bin/build.js"
+        "build": "node bin/build.js && npm run build:css",
+        "build:css": "postcss resources/css/components/combobox.css -o resources/dist/components/combobox.css"
     },
     "devDependencies": {
+        "cssnano": "^6.0.1",
         "esbuild": "^0.25.10",
+        "postcss": "^8.4.27",
+        "postcss-cli": "^10.1.0",
+        "postcss-nesting": "^13.0.0",
         "prettier": "^3.6.2"
     }
 }

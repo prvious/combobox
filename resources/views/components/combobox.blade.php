@@ -31,7 +31,7 @@
 <x-dynamic-component
     :component="$fieldWrapperView"
     :field="$field"
-    class="fi-fo-select-wrp"
+    class="prvious-fo-combobox-wrp"
 >
     <x-filament::input.wrapper
         :disabled="$isDisabled"
@@ -49,9 +49,9 @@
         :attributes="
             \Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())
                 ->class([
-                    'fi-fo-select',
-                    'fi-fo-select-has-inline-prefix' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
-                    'fi-fo-select-native' => $isNative,
+                    'prvious-fo-combobox',
+                    'prvious-fo-combobox-has-inline-prefix' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
+                    'prvious-fo-combobox-native' => $isNative,
                 ])
         "
     >
@@ -67,8 +67,8 @@
                             $applyStateBindingModifiers('wire:model') => $statePath,
                         ], escape: false)
                         ->class([
-                            'fi-select-input',
-                            'fi-select-input-has-inline-prefix' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
+                            'prvious-combobox-input',
+                            'prvious-combobox-input-has-inline-prefix' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
                         ])
                 }}
             >
@@ -118,7 +118,7 @@
                     init() {
                         const container = $el.nextElementSibling
                         container.dispatchEvent(
-                            new CustomEvent('set-select-property', {
+                            new CustomEvent('set-combobox-property', {
                                 detail: { isDisabled: this.isDisabled },
                             }),
                         )
@@ -127,8 +127,9 @@
             ></div>
             <div
                 x-load
-                x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('select', 'filament/forms') }}"
-                x-data="selectFormComponent({
+                x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('combobox', 'prvious/filament-combobox') }}"
+                x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('combobox', package: 'prvious/filament-combobox'))]"
+                x-data="comboboxFormComponent({
                             canOptionLabelsWrap: @js($canOptionLabelsWrap),
                             canSelectPlaceholder: @js($canSelectPlaceholder),
                             isHtmlAllowed: @js($isHtmlAllowed),
@@ -171,7 +172,7 @@
                             options: @js($getOptionsForJs()),
                             optionsLimit: @js($getOptionsLimit()),
                             placeholder: @js($getPlaceholder()),
-                            position: @js($getPosition()),
+
                             searchDebounce: @js($getSearchDebounce()),
                             searchingMessage: @js($getSearchingMessage()),
                             searchPrompt: @js($getSearchPrompt()),
@@ -185,15 +186,14 @@
                         $isDisabled,
                     ])), 0, 64)
                 }}"
-                x-on:keydown.esc="select.dropdown.isActive && $event.stopPropagation()"
-                x-on:set-select-property="$event.detail.isDisabled ? select.disable() : select.enable()"
+                x-on:set-combobox-property="$event.detail.isDisabled ? combobox.disable() : combobox.enable()"
                 {{
                     $attributes
                         ->merge($getExtraAlpineAttributes(), escape: false)
-                        ->class(['fi-select-input'])
+                        ->class(['prvious-combobox-input'])
                 }}
             >
-                <div x-ref="select"></div>
+                <div x-ref="combobox"></div>
             </div>
         @endif
     </x-filament::input.wrapper>

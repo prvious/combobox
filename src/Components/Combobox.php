@@ -9,5 +9,5 @@ class Combobox extends Select
     /**
      * @var view-string
      */
-    protected string $view = 'filament-forms::components.select';
+    protected string $view = 'prvious-combobox::components.combobox';
 }

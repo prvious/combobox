@@ -16,10 +16,27 @@ jobs:
         php: [8.4, 8.3, 8.2]
         laravel: [11.*, 12.*]
         stability: [prefer-lowest, prefer-stable]
-        # include:
-        #   - laravel: 10.*
-        #     testbench: 8.*
-        #     carbon: 2.*
+        include:
+          - laravel: 12.*
+            testbench: ^10.0
+            carbon: ^3.0
+            # pestphp: ^3.0
+            # pest-plugin-laravel: ^3.0
+            # pest-type-coverage: ^3.0
+            # larastan: ^3.0
+            # rector: ^2.0
+            # phpstan-phpunit: ^2.0
+            # phpstan-deprecation: ^2.0
+          - laravel: 11.*
+            testbench: ^9.0
+            carbon: ^2.63
+            # pestphp: ^3.0
+            # pest-plugin-laravel: ^3.0
+            # pest-type-coverage: ^3.0
+            # larastan: ^3.0
+            # rector: ^2.0
+            # phpstan-phpunit: ^2.0
+            # phpstan-deprecation: ^2.0
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 

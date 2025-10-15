@@ -35,7 +35,4 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
-    <php>
-        <env name="XDEBUG_MODE" value="coverage"/>
-    </php>
 </phpunit>

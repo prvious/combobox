@@ -3,6 +3,7 @@ services:
         image: ghcr.io/prvious/frankenphp:latest-dev
         volumes:
             - ./:/app
+            - ./php.ini:/usr/local/etc/php/php.ini:ro
         networks:
             - traefik
         labels:

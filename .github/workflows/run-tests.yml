@@ -20,23 +20,23 @@ jobs:
           - laravel: 12.*
             testbench: ^10.0
             carbon: ^3.0
-            # pestphp: ^3.0
-            # pest-plugin-laravel: ^3.0
-            # pest-type-coverage: ^3.0
-            # larastan: ^3.0
+            pestphp: ^3.0
+            pest-plugin-laravel: ^3.0
+            pest-type-coverage: ^3.0
+            larastan: ^3.0
             # rector: ^2.0
-            # phpstan-phpunit: ^2.0
-            # phpstan-deprecation: ^2.0
+            phpstan-phpunit: ^2.0
+            phpstan-deprecation: ^2.0
           - laravel: 11.*
             testbench: ^9.0
             carbon: ^2.63
-            # pestphp: ^3.0
-            # pest-plugin-laravel: ^3.0
-            # pest-type-coverage: ^3.0
-            # larastan: ^3.0
+            pestphp: ^3.0
+            pest-plugin-laravel: ^3.0
+            pest-type-coverage: ^3.0
+            larastan: ^3.0
             # rector: ^2.0
-            # phpstan-phpunit: ^2.0
-            # phpstan-deprecation: ^2.0
+            phpstan-phpunit: ^2.0
+            phpstan-deprecation: ^2.0
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -51,6 +51,18 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: none
 
+      - name: Composer cache dir
+        id: composer-cache
+        shell: bash
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: dependencies-php-${{ matrix.php }}-os-${{ matrix.os }}-version-${{ matrix.stability }}-${{ matrix.laravel }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-php-${{ matrix.php }}-os-${{ matrix.os }}-version-${{ matrix.stability }}-${{ matrix.laravel }}-composer-
+
       - name: Setup problem matchers
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
@@ -58,7 +70,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+          composer require "pestphp/pest:${{ matrix.pestphp }}" "pestphp/pest-plugin-arch:${{ matrix.pestphp }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" "larastan/larastan:${{ matrix.larastan }}" "phpstan/phpstan-phpunit:${{ matrix.phpstan-phpunit }}" "phpstan/phpstan-deprecation-rules:${{ matrix.phpstan-deprecation }}" --no-interaction --no-update
+
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: List Installed Dependencies

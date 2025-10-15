@@ -13,7 +13,7 @@ FilamentPHP v3 combobox form field package for Laravel
 
 ## Code Style
 
--   PHP 8.1+ with typed properties and return types
+-   PHP 8.2+ with typed properties and return types
 -   Follow Laravel Pint configuration in `pint.json`
 -   No docblocks for simple type-hinted methods
 -   Use Filament naming conventions

@@ -5,7 +5,7 @@
 FilamentPHP combobox form field package (`prvious/filament-combobox`)
 
 -   Composer package for Filament Panel v3+
--   PHP 8.1+, Laravel service provider architecture
+-   PHP 8.2+, Laravel service provider architecture
 -   Frontend: Alpine.js components with Tailwind CSS
 
 ## Key Conventions

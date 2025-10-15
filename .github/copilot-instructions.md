@@ -2,34 +2,30 @@
 
 ## Context
 
-FilamentPHP v3 combobox form field package for Laravel
+FilamentPHP v4 combobox form field package for Laravel
 
-## Docker Environment
-
-**CRITICAL: Always prefix ALL commands with `d`**
-
--   Use `d composer install`, `d php artisan serve`, `d vendor/bin/pest`
--   Never run bare commands like `composer` or `php` - always use `d`
+- Use `composer install`, `php artisan serve`, `vendor/bin/pest`
+- Never run bare commands like `composer` or `php` - always use `d`
 
 ## Code Style
 
--   PHP 8.2+ with typed properties and return types
--   Follow Laravel Pint configuration in `pint.json`
--   No docblocks for simple type-hinted methods
--   Use Filament naming conventions
+- PHP 8.2+ with typed properties and return types
+- Follow Laravel Pint configuration in `pint.json`
+- No docblocks for simple type-hinted methods
+- Use Filament naming conventions
 
 ## Testing
 
--   Write Pest tests in `tests/`
--   Test command: `d composer test`
--   Lint command: `d composer lint`
+- Write Pest tests in `tests/`
+- Test command: `composer test`
+- Lint command: `composer lint`
 
 ## Frontend
 
--   Alpine.js for interactivity
--   Tailwind CSS for styling
--   Build: `d pnpm build`
--   Follow Filament's component patterns
+- Alpine.js for interactivity
+- Tailwind CSS for styling
+- Build: `pnpm build`
+- Follow Filament's component patterns
 
 ## Key Rules
 

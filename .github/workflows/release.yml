@@ -1,0 +1,115 @@
+name: manual release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create tags and releases
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          # Fetch all tags from the remote to ensure we have the latest information
+          git fetch --tags --force
+          # Get the latest tag name based on commit history. Handles cases where no tags exist.
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "none")
+          echo "Latest tag found: $latest_tag"
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+      - name: Determine next version
+        id: versioning
+        run: |
+          input_version="${{ github.event.inputs.version }}"
+          latest_tag="${{ steps.get_latest_tag.outputs.latest_tag }}"
+          new_version=""
+
+          if [ -n "$input_version" ]; then
+            echo "Using user-provided version: $input_version"
+            new_version="$input_version"
+          elif [ "$latest_tag" == "none" ]; then
+            echo "No previous tags found. Initializing with v0.0.1."
+            new_version="0.0.1" # Default initial version
+          else
+            echo "Previous tag: $latest_tag"
+            # Remove \'v\' prefix if exists for calculation
+            version_core=$(echo "$latest_tag" | sed "s/^v//")
+
+            # Split into major, minor, patch
+            # Ensure major, minor, patch are treated as numbers, default to 0 if not present after split
+            major=$(echo "$version_core" | cut -d. -f1)
+            minor=$(echo "$version_core" | cut -d. -f2)
+            # Patch is not used for next minor version calculation, will be set to 0
+
+            major_val=${major:-0}
+            minor_val=${minor:-0}
+
+            # Increment minor version, reset patch to 0 for a minor release
+            next_minor=$((minor_val + 1))
+            new_version="${major_val}.${next_minor}.0"
+            echo "Calculated next version: $new_version"
+          fi
+
+          # Validate the determined version format
+          if [[ ! "$new_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Determined version \'$new_version\' is not a valid semver string (expected format X.Y.Z)."
+            exit 1
+          fi
+
+          echo "Final version to use: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Check if version already exists
+        id: check_version
+        run: |
+          new_version="${{ steps.versioning.outputs.new_version }}"
+          echo "Checking if version $new_version already exists..."
+
+          # Check if tag exists locally
+          if git tag -l | grep -q "^${new_version}$" || git tag -l | grep -q "^v${new_version}$"; then
+            echo "Error: Version $new_version already exists as a tag!"
+            exit 1
+          fi
+
+          # Check if release exists on GitHub
+          if gh release view "$new_version" >/dev/null 2>&1 || gh release view "v$new_version" >/dev/null 2>&1; then
+            echo "Error: Release for version $new_version already exists on GitHub!"
+            exit 1
+          fi
+
+          echo "Version $new_version is available for release."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Next Verison Release
+        env:
+          NEXT_VERSION: ${{ steps.versioning.outputs.new_version }}
+        run: |
+          echo "Creating release for tag $NEXT_VERSION"
+          echo "$NEXT_VERSION"
+
+      - name: Create GitHub Release
+        if: (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_VERSION: ${{ steps.versioning.outputs.new_version }}
+        run: |
+          echo "Creating release for tag $NEXT_VERSION"
+          gh release create "$NEXT_VERSION" \
+            --generate-notes \
+            --latest \
+            --title "Release $NEXT_VERSION"

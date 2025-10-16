@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "node bin/build.js --dev",
-        "build": "node bin/build.js && npm run build:css",
+        "build": "node bin/build.js && pnpm build:css",
         "build:css": "postcss resources/css/components/combobox.css -o resources/dist/components/combobox.css"
     },
     "devDependencies": {

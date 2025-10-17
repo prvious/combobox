@@ -42,6 +42,9 @@ class Combobox {
         maxItemsMessage = 'Maximum number of items selected',
         optionsLimit = null,
         searchableOptionFields = ['label'],
+        defaultSearchQuery = null,
+        initialSearchQuery = null,
+        shouldTriggerSearch = false,
         livewireId = null,
         statePath = null,
         onStateChange = () => {},
@@ -78,13 +81,16 @@ class Combobox {
         this.searchableOptionFields = Array.isArray(searchableOptionFields)
             ? searchableOptionFields
             : ['label']
+        this.defaultSearchQuery = defaultSearchQuery
+        this.initialSearchQuery = initialSearchQuery
+        this.shouldTriggerSearch = shouldTriggerSearch
         this.livewireId = livewireId
         this.statePath = statePath
         this.onStateChange = onStateChange
 
         this.labelRepository = {}
         this.selectedIndex = -1
-        this.searchQuery = ''
+        this.searchQuery = defaultSearchQuery || ''
         this.searchTimeout = null
         this.isSearching = false
         this.selectedDisplayVersion = 0
@@ -94,6 +100,10 @@ class Combobox {
 
         if (this.isAutofocused && this.searchInput) {
             this.searchInput.focus()
+        }
+
+        if (this.shouldTriggerSearch && filled(this.initialSearchQuery)) {
+            this.performInitialSearch()
         }
     }
 
@@ -139,6 +149,10 @@ class Combobox {
             this.searchInput.type = 'text'
             this.searchInput.placeholder = this.searchPrompt
             this.searchInput.setAttribute('aria-label', 'Search')
+            
+            if (this.searchQuery) {
+                this.searchInput.value = this.searchQuery
+            }
 
             this.searchContainer.appendChild(this.searchInput)
         }
@@ -194,6 +208,63 @@ class Combobox {
         } catch (error) {
             console.error('Error fetching options:', error)
             this.hideLoadingState()
+        }
+    }
+
+    async performInitialSearch() {
+        if (!this.isSearchable || !this.searchInput) {
+            return
+        }
+
+        const query = this.initialSearchQuery
+
+        if (!filled(query)) {
+            return
+        }
+
+        this.searchQuery = query
+        this.searchInput.value = query
+
+        if (
+            !this.getSearchResultsUsing ||
+            typeof this.getSearchResultsUsing !== 'function' ||
+            !this.hasDynamicSearchResults
+        ) {
+            this.filterOptions(query.trim().toLowerCase())
+            return
+        }
+
+        this.isSearching = true
+
+        try {
+            this.showLoadingState(true)
+
+            const results = await this.getSearchResultsUsing(query)
+
+            const normalizedResults = Array.isArray(results)
+                ? results
+                : results && Array.isArray(results.options)
+                  ? results.options
+                  : []
+
+            this.options = normalizedResults
+
+            this.populateLabelRepositoryFromOptions(normalizedResults)
+
+            this.hideLoadingState()
+            this.renderOptions()
+
+            if (this.options.length === 0) {
+                this.showNoResultsMessage()
+            }
+        } catch (error) {
+            console.error('Error fetching initial search results:', error)
+
+            this.hideLoadingState()
+            this.options = JSON.parse(JSON.stringify(this.originalOptions))
+            this.renderOptions()
+        } finally {
+            this.isSearching = false
         }
     }
 
@@ -1538,6 +1609,9 @@ export default function comboboxFormComponent({
     searchingMessage,
     searchPrompt,
     searchableOptionFields,
+    defaultSearchQuery,
+    initialSearchQuery,
+    shouldTriggerSearch,
     state,
     statePath,
 }) {
@@ -1577,6 +1651,9 @@ export default function comboboxFormComponent({
                 maxItemsMessage,
                 optionsLimit,
                 searchableOptionFields,
+                defaultSearchQuery,
+                initialSearchQuery,
+                shouldTriggerSearch,
                 livewireId,
                 statePath,
                 onStateChange: (newState) => {

@@ -43,9 +43,9 @@ Combobox::make('status')
     ])
 ```
 
-### Setting a Default Search Query
+### Setting a Search Query
 
-You can set a default search query that will be displayed in the search input when the component loads. This does not trigger a search; it simply sets the default value:
+You can set a search query that will be displayed in the search input when the component loads:
 
 ```php
 Combobox::make('product')
@@ -53,12 +53,14 @@ Combobox::make('product')
     ->options([
         // your options
     ])
-    ->defaultSearchQuery('electronics')
+    ->searchQuery('electronics')
 ```
 
-### Triggering a Search on Load
+This will populate the search input with "electronics" but will not trigger a search automatically.
 
-If you want to perform a search automatically when the component boots, use the `searchQuery()` method. This will populate the search input with the query and trigger a search using your search handler:
+### Auto-Triggering a Search on Load
+
+If you want to perform a search automatically when the component boots, use the `autoSearch()` method along with `searchQuery()`:
 
 ```php
 Combobox::make('product')
@@ -70,6 +72,7 @@ Combobox::make('product')
             ->toArray();
     })
     ->searchQuery('electronics')
+    ->autoSearch()
 ```
 
 This is useful when you want to pre-filter options based on context, such as:
@@ -77,7 +80,16 @@ This is useful when you want to pre-filter options based on context, such as:
 - Filtering items based on user permissions
 - Displaying search results based on a related field value
 
-**Note:** The `searchQuery()` method requires that the component is searchable and has a search handler configured.
+You can also conditionally enable auto-search:
+
+```php
+Combobox::make('product')
+    ->searchable()
+    ->searchQuery($categoryName)
+    ->autoSearch(filled($categoryName))
+```
+
+**Note:** The `autoSearch()` method requires that the component is searchable and has a search handler configured.
 
 ## Testing
 

@@ -42,9 +42,8 @@ class Combobox {
         maxItemsMessage = 'Maximum number of items selected',
         optionsLimit = null,
         searchableOptionFields = ['label'],
-        defaultSearchQuery = null,
-        initialSearchQuery = null,
-        shouldTriggerSearch = false,
+        searchQuery = null,
+        autoSearch = false,
         livewireId = null,
         statePath = null,
         onStateChange = () => {},
@@ -81,16 +80,15 @@ class Combobox {
         this.searchableOptionFields = Array.isArray(searchableOptionFields)
             ? searchableOptionFields
             : ['label']
-        this.defaultSearchQuery = defaultSearchQuery
-        this.initialSearchQuery = initialSearchQuery
-        this.shouldTriggerSearch = shouldTriggerSearch
+        this.initialSearchQuery = searchQuery
+        this.autoSearch = autoSearch
         this.livewireId = livewireId
         this.statePath = statePath
         this.onStateChange = onStateChange
 
         this.labelRepository = {}
         this.selectedIndex = -1
-        this.searchQuery = defaultSearchQuery || ''
+        this.searchQuery = searchQuery || ''
         this.searchTimeout = null
         this.isSearching = false
         this.selectedDisplayVersion = 0
@@ -102,7 +100,7 @@ class Combobox {
             this.searchInput.focus()
         }
 
-        if (this.shouldTriggerSearch && filled(this.initialSearchQuery)) {
+        if (this.autoSearch && filled(this.initialSearchQuery)) {
             this.performInitialSearch()
         }
     }
@@ -1609,9 +1607,8 @@ export default function comboboxFormComponent({
     searchingMessage,
     searchPrompt,
     searchableOptionFields,
-    defaultSearchQuery,
-    initialSearchQuery,
-    shouldTriggerSearch,
+    searchQuery,
+    autoSearch,
     state,
     statePath,
 }) {
@@ -1651,9 +1648,8 @@ export default function comboboxFormComponent({
                 maxItemsMessage,
                 optionsLimit,
                 searchableOptionFields,
-                defaultSearchQuery,
-                initialSearchQuery,
-                shouldTriggerSearch,
+                searchQuery,
+                autoSearch,
                 livewireId,
                 statePath,
                 onStateChange: (newState) => {

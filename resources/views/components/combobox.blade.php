@@ -177,9 +177,8 @@
                             searchingMessage: @js($getSearchingMessage()),
                             searchPrompt: @js($getSearchPrompt()),
                             searchableOptionFields: @js($getSearchableOptionFields()),
-                            defaultSearchQuery: @js($getDefaultSearchQuery()),
-                            initialSearchQuery: @js($getSearchQueryValue()),
-                            shouldTriggerSearch: @js($shouldTriggerSearch()),
+                            searchQuery: @js($getSearchQuery()),
+                            autoSearch: @js($shouldAutoSearch()),
                             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
                             statePath: @js($statePath),
                         })"

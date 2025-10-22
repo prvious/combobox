@@ -30,9 +30,66 @@ return [
 
 ## Usage
 
-```php
+### Basic Usage
 
+```php
+use Prvious\Filament\Combobox\Components\Combobox;
+
+Combobox::make('status')
+    ->options([
+        'draft' => 'Draft',
+        'published' => 'Published',
+        'archived' => 'Archived',
+    ])
 ```
+
+### Setting a Search Query
+
+You can set a search query that will be displayed in the search input when the component loads:
+
+```php
+Combobox::make('product')
+    ->searchable()
+    ->options([
+        // your options
+    ])
+    ->searchQuery('electronics')
+```
+
+This will populate the search input with "electronics" but will not trigger a search automatically.
+
+### Auto-Triggering a Search on Load
+
+If you want to perform a search automatically when the component boots, use the `autoSearch()` method along with `searchQuery()`:
+
+```php
+Combobox::make('product')
+    ->searchable()
+    ->getSearchResultsUsing(function (string $search) {
+        return Product::where('name', 'like', "%{$search}%")
+            ->limit(50)
+            ->pluck('name', 'id')
+            ->toArray();
+    })
+    ->searchQuery('electronics')
+    ->autoSearch()
+```
+
+This is useful when you want to pre-filter options based on context, such as:
+- Showing products from a specific category
+- Filtering items based on user permissions
+- Displaying search results based on a related field value
+
+You can also conditionally enable auto-search:
+
+```php
+Combobox::make('product')
+    ->searchable()
+    ->searchQuery($categoryName)
+    ->autoSearch(filled($categoryName))
+```
+
+**Note:** The `autoSearch()` method requires that the component is searchable and has a search handler configured.
 
 ## Testing
 

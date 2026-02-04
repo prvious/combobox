@@ -40,9 +40,8 @@
 
         &:focus {
             border-color: rgb(var(--primary-600));
-            outline: none;
-            ring: 2px;
-            ring-color: rgb(var(--primary-600) / 0.2);
+            outline: 2px solid rgb(var(--primary-600) / 0.2);
+            outline-offset: 2px;
         }
     }
 }
@@ -59,7 +58,8 @@
 
             &:focus {
                 border-color: rgb(var(--primary-500));
-                ring-color: rgb(var(--primary-500) / 0.2);
+                outline: 2px solid rgb(var(--primary-500) / 0.2);
+                outline-offset: 2px;
             }
         }
     }

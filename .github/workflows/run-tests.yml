@@ -70,7 +70,7 @@ jobs:
       - name: Setup and Migrate Database
         run: |
           php vendor/bin/testbench package:test-skeleton
-          php vendor/bin/testbench migrate:fresh --seed
+          php vendor/bin/testbench migrate:fresh
 
       - name: Run Dusk server
         run: php vendor/bin/testbench serve &

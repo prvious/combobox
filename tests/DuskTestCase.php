@@ -6,11 +6,16 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Dusk\TestCase as BaseTestCase;
 use PHPUnit\Framework\Attributes\BeforeClass;
+use Workbench\App\Providers\Filament\AdminPanelProvider;
+use Workbench\App\Providers\WorkbenchServiceProvider;
 
 abstract class DuskTestCase extends BaseTestCase
 {
+    use CreatesApplication;
+
     /**
      * Prepare for Dusk test execution.
      */
@@ -20,6 +25,13 @@ abstract class DuskTestCase extends BaseTestCase
         if (! static::runningInSail()) {
             static::startChromeDriver(['--port=9515']);
         }
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Artisan::call('migrate:fresh');
     }
 
     /**
@@ -49,5 +61,16 @@ abstract class DuskTestCase extends BaseTestCase
     protected function baseUrl()
     {
         return $_ENV['APP_URL'] ?? env('APP_URL') ?? 'http://localhost:8000';
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return array_merge(
+            parent::getPackageProviders($app),
+            [
+                WorkbenchServiceProvider::class,
+                AdminPanelProvider::class,
+            ]
+        );
     }
 }

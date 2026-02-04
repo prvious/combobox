@@ -45,3 +45,63 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci
+
+  browser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
+
+      - name: Install dependencies
+        run: composer install --no-ansi --no-interaction --optimize-autoloader --prefer-dist
+
+      - name: Setup Configuration
+        run: |
+          cp testbench.yaml.example testbench.yaml
+          cp .env.dusk.local.example .env.dusk.local
+
+      - name: Upgrade Chrome Driver
+        run: php vendor/bin/dusk-updater detect --auto-update
+
+      - name: Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515 &
+
+      - name: Setup and Migrate Database
+        run: |
+          php vendor/bin/testbench package:test-skeleton
+          php vendor/bin/testbench migrate:fresh
+
+      - name: Run Dusk server
+        run: php vendor/bin/testbench serve &
+        env:
+          APP_URL: http://127.0.0.1:8000
+
+      - name: Wait for server
+        run: |
+          timeout 60 bash -c 'until curl -s http://127.0.0.1:8000 > /dev/null; do sleep 1; done'
+
+      - name: Run Browser Tests
+        run: php vendor/bin/pest tests/Browser --colors=always
+        env:
+          APP_URL: http://127.0.0.1:8000
+          DUSK_DRIVER_URL: http://localhost:9515
+
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-screenshots
+          path: tests/Browser/screenshots
+
+      - name: Upload Console Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-console-logs
+          path: tests/Browser/console

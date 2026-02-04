@@ -2,7 +2,9 @@
 
 namespace Workbench\App\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Workbench\App\Providers\Filament\AdminPanelProvider;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,7 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->register(AdminPanelProvider::class);
     }
 
     /**
@@ -19,6 +21,6 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Route::view('/', 'welcome');
     }
 }

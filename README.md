@@ -93,9 +93,25 @@ Combobox::make('product')
 
 ## Testing
 
+### Unit Tests
+
 ```bash
 composer test
 ```
+
+### Browser Tests
+
+The package includes comprehensive browser tests using Laravel Dusk to test the Combobox component in a real browser environment.
+
+```bash
+# Run all tests including browser tests
+php vendor/bin/pest
+
+# Run only browser tests
+php vendor/bin/pest tests/Browser
+```
+
+For detailed information about browser testing, see [BROWSER_TESTING.md](BROWSER_TESTING.md).
 
 ## Changelog
 

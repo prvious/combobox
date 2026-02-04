@@ -527,9 +527,14 @@ class Combobox {
 
         // Show selected value as placeholder when not searching
         if (!this.searchQuery) {
-            this.searchInput.placeholder = this.isHtmlAllowed 
-                ? selectedLabel.replace(/<[^>]*>/g, '') 
-                : selectedLabel
+            if (this.isHtmlAllowed) {
+                // Safely extract text content from HTML
+                const tempDiv = document.createElement('div')
+                tempDiv.innerHTML = selectedLabel
+                this.searchInput.placeholder = tempDiv.textContent || tempDiv.innerText || ''
+            } else {
+                this.searchInput.placeholder = selectedLabel
+            }
         }
     }
 

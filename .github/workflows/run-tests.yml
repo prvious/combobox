@@ -61,6 +61,11 @@ jobs:
       - name: Install dependencies
         run: composer install --no-ansi --no-interaction --optimize-autoloader --prefer-dist
 
+      - name: Setup Configuration
+        run: |
+          cp testbench.yaml.example testbench.yaml
+          cp .env.dusk.local.example .env.dusk.local
+
       - name: Upgrade Chrome Driver
         run: php vendor/bin/dusk-updater detect --auto-update
 

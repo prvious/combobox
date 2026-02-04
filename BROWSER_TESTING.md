@@ -16,7 +16,16 @@ This package includes browser tests using Laravel Dusk to test the Combobox comp
 composer install
 ```
 
-### 2. Install/Update ChromeDriver
+### 2. Setup Configuration
+
+Copy the example testbench configuration:
+
+```bash
+cp testbench.yaml.example testbench.yaml
+cp .env.dusk.local.example .env.dusk.local
+```
+
+### 3. Install/Update ChromeDriver
 
 ```bash
 php vendor/bin/dusk-updater detect --auto-update

@@ -134,26 +134,36 @@ class Combobox {
             )
         }
 
-        this.selectedDisplay = document.createElement('div')
-        this.selectedDisplay.className = 'prvious-combobox-input-value-ctn'
-        this.updateSelectedDisplay()
-
-        if (this.isSearchable) {
-            this.searchContainer = document.createElement('div')
-            this.searchContainer.className = 'prvious-combobox-input-search-ctn'
-
-            this.searchInput = document.createElement('input')
-            this.searchInput.className = 'fi-input'
-            this.searchInput.type = 'text'
-            this.searchInput.placeholder = this.searchPrompt
-            this.searchInput.setAttribute('aria-label', 'Search')
-            
-            if (this.searchQuery) {
-                this.searchInput.value = this.searchQuery
-            }
-
-            this.searchContainer.appendChild(this.searchInput)
+        // Selected display for badges (multiple selection only) - shown above input
+        if (this.isMultiple) {
+            this.selectedDisplay = document.createElement('div')
+            this.selectedDisplay.className = 'prvious-combobox-input-value-ctn'
+            this.container.appendChild(this.selectedDisplay)
         }
+
+        // Create unified search input with icon
+        this.searchContainer = document.createElement('div')
+        this.searchContainer.className = 'prvious-combobox-input-search-ctn'
+
+        // Add search icon
+        const searchIcon = document.createElement('span')
+        searchIcon.className = 'prvious-combobox-search-icon'
+        searchIcon.innerHTML = '<svg class="fi-icon fi-size-md" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>'
+        this.searchContainer.appendChild(searchIcon)
+
+        this.searchInput = document.createElement('input')
+        this.searchInput.className = 'fi-input prvious-combobox-unified-input'
+        this.searchInput.type = 'text'
+        this.searchInput.setAttribute('aria-label', 'Search')
+        
+        if (this.searchQuery) {
+            this.searchInput.value = this.searchQuery
+        }
+
+        this.searchContainer.appendChild(this.searchInput)
+        this.container.appendChild(this.searchContainer)
+
+        this.updateSelectedDisplay()
 
         this.optionsContainer = document.createElement('div')
         this.optionsContainer.className =
@@ -170,10 +180,6 @@ class Combobox {
 
         this.optionsContainer.appendChild(this.optionsList)
 
-        this.container.appendChild(this.selectedDisplay)
-        if (this.isSearchable) {
-            this.container.appendChild(this.searchContainer)
-        }
         this.container.appendChild(this.optionsContainer)
 
         this.element.appendChild(this.container)
@@ -480,34 +486,38 @@ class Combobox {
         this.selectedDisplayVersion = this.selectedDisplayVersion + 1
         const renderVersion = this.selectedDisplayVersion
 
-        const fragment = document.createDocumentFragment()
+        if (!this.searchInput) {
+            return
+        }
 
         if (this.isMultiple) {
+            // For multiple selection, show badges above the input
+            const fragment = document.createDocumentFragment()
+            
             if (!Array.isArray(this.state) || this.state.length === 0) {
-                const placeholderSpan = document.createElement('span')
-                placeholderSpan.textContent = this.placeholder
-                placeholderSpan.classList.add('prvious-combobox-input-placeholder')
-                fragment.appendChild(placeholderSpan)
+                this.searchInput.placeholder = this.placeholder
+                if (this.selectedDisplay) {
+                    this.selectedDisplay.replaceChildren(fragment)
+                }
             } else {
                 let selectedLabels = await this.getLabelsForMultipleSelection()
                 if (renderVersion !== this.selectedDisplayVersion) return
                 this.addBadgesForSelectedOptions(selectedLabels, fragment)
-            }
-
-            if (renderVersion === this.selectedDisplayVersion) {
-                this.selectedDisplay.replaceChildren(fragment)
+                this.searchInput.placeholder = this.searchPrompt
+                
+                if (renderVersion === this.selectedDisplayVersion && this.selectedDisplay) {
+                    this.selectedDisplay.replaceChildren(fragment)
+                }
             }
             return
         }
 
+        // For single selection, update input placeholder/value
         if (this.state === null || this.state === '') {
-            const placeholderSpan = document.createElement('span')
-            placeholderSpan.textContent = this.placeholder
-            placeholderSpan.classList.add('prvious-combobox-input-placeholder')
-            fragment.appendChild(placeholderSpan)
-
-            if (renderVersion === this.selectedDisplayVersion) {
-                this.selectedDisplay.replaceChildren(fragment)
+            this.searchInput.placeholder = this.placeholder
+            // Clear any value when nothing is selected
+            if (!this.searchQuery) {
+                this.searchInput.value = ''
             }
             return
         }
@@ -515,10 +525,11 @@ class Combobox {
         const selectedLabel = await this.getLabelForSingleSelection()
         if (renderVersion !== this.selectedDisplayVersion) return
 
-        this.addSingleSelectionDisplay(selectedLabel, fragment)
-
-        if (renderVersion === this.selectedDisplayVersion) {
-            this.selectedDisplay.replaceChildren(fragment)
+        // Show selected value as placeholder when not searching
+        if (!this.searchQuery) {
+            this.searchInput.placeholder = this.isHtmlAllowed 
+                ? selectedLabel.replace(/<[^>]*>/g, '') 
+                : selectedLabel
         }
     }
 

@@ -933,15 +933,13 @@ class Combobox {
                                 this.labelRepository[this.state] = newLabel
                             }
 
-                            const labelContainer =
-                                this.selectedDisplay.querySelector(
-                                    '.prvious-combobox-input-value-label',
-                                )
-                            if (filled(labelContainer)) {
+                            if (this.searchInput && (!this.searchQuery)) {
                                 if (this.isHtmlAllowed) {
-                                    labelContainer.innerHTML = newLabel
+                                    const tempDiv = document.createElement('div')
+                                    tempDiv.innerHTML = newLabel
+                                    this.searchInput.placeholder = tempDiv.textContent || tempDiv.innerText || ''
                                 } else {
-                                    labelContainer.textContent = newLabel
+                                    this.searchInput.placeholder = newLabel
                                 }
                             }
 
@@ -1359,6 +1357,11 @@ class Combobox {
 
         if (!this.isMultiple) {
             this.state = value
+            this.searchQuery = ''
+            if (this.searchInput) {
+                this.searchInput.value = ''
+            }
+            this.options = JSON.parse(JSON.stringify(this.originalOptions))
             this.updateSelectedDisplay()
             this.renderOptions()
             this.onStateChange(this.state)

@@ -13,3 +13,6 @@ phpstan.neon
 testbench.yaml
 vendor
 .pnpm-store
+tests/Browser/screenshots
+tests/Browser/console
+.env.dusk.local

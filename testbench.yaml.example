@@ -1,0 +1,18 @@
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+workbench:
+  start: '/'
+  user: admin@example.com
+  guard: web
+  install: true
+  welcome: false
+  health: false
+  discovers:
+    web: true
+    api: true
+    commands: true
+    views: true

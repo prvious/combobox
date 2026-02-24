@@ -145,13 +145,15 @@ class Combobox {
         this.searchContainer = document.createElement('div')
         this.searchContainer.className = 'prvious-combobox-input-search-ctn'
 
-        // Add search icon only when searchable
+        // Add icon - search icon when searchable, dropdown arrow otherwise
+        const searchIcon = document.createElement('span')
+        searchIcon.className = 'prvious-combobox-search-icon'
         if (this.isSearchable) {
-            const searchIcon = document.createElement('span')
-            searchIcon.className = 'prvious-combobox-search-icon'
             searchIcon.innerHTML = '<svg class="fi-icon fi-size-md" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>'
-            this.searchContainer.appendChild(searchIcon)
+        } else {
+            searchIcon.innerHTML = '<svg class="fi-icon fi-size-md" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>'
         }
+        this.searchContainer.appendChild(searchIcon)
 
         this.searchInput = document.createElement('input')
         this.searchInput.className = 'fi-input prvious-combobox-unified-input'
@@ -162,8 +164,8 @@ class Combobox {
         } else {
             this.searchInput.readOnly = true
             this.searchInput.setAttribute('aria-label', 'Selected value')
-            this.searchContainer.classList.add('prvious-combobox-input-search-ctn--no-search')
         }
+
 
         if (this.searchQuery) {
             this.searchInput.value = this.searchQuery
@@ -547,10 +549,9 @@ class Combobox {
         // For single selection, update input placeholder/value
         if (this.state === null || this.state === '') {
             this.searchInput.placeholder = this.placeholder
-            // Clear any value when nothing is selected
-            if (!this.searchQuery) {
-                this.searchInput.value = ''
-            }
+            // Clear any existing search when nothing is selected so the placeholder is visible
+            this.searchQuery = ''
+            this.searchInput.value = ''
             if (this.clearButton) {
                 this.clearButton.style.display = 'none'
             }
@@ -1350,6 +1351,7 @@ class Combobox {
             if (this.searchInput) {
                 this.searchInput.value = ''
             }
+            this.options = JSON.parse(JSON.stringify(this.originalOptions))
             this.updateSelectedDisplay()
             this.renderOptions()
             this.onStateChange(this.state)

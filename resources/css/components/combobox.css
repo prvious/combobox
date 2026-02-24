@@ -63,6 +63,20 @@
     }
 }
 
+/* Non-searchable combobox: no search icon, so reduce left padding */
+.prvious-combobox-input-search-ctn--no-search .prvious-combobox-unified-input {
+    padding-left: 0.75rem;
+    cursor: default;
+}
+
+/* Clear button inside the search container */
+.prvious-combobox-input-search-ctn .prvious-combobox-input-value-remove-btn {
+    position: absolute;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
 /* Border-top on search when badges are above (multi-select with selections) */
 .prvious-combobox-input-value-ctn:not(:empty) + .prvious-combobox-input-search-ctn {
     border-top: 1px solid var(--gray-200);

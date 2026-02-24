@@ -6,17 +6,11 @@ use Illuminate\Support\ServiceProvider;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
-        //
+        $this->app->register(\Workbench\App\Providers\Filament\AdminPanelProvider::class);
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         //

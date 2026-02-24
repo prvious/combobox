@@ -37,14 +37,14 @@ class PostResource extends Resource
                             ->label('Category (Server Search)')
                             ->helperText('Searchable combobox with server-side search')
                             ->searchable()
-                            ->getSearchResultsUsing(fn (string $search): array =>
-                                Category::where('name', 'like', "%{$search}%")
+                            ->getSearchResultsUsing(
+                                fn (string $search): array => Category::where('name', 'like', "%{$search}%")
                                     ->limit(50)
                                     ->pluck('name', 'id')
                                     ->toArray()
                             )
-                            ->getOptionLabelUsing(fn ($value): ?string =>
-                                Category::find($value)?->name
+                            ->getOptionLabelUsing(
+                                fn ($value): ?string => Category::find($value)?->name
                             ),
 
                         // 2. Static options combobox (no search needed)
@@ -95,14 +95,14 @@ class PostResource extends Resource
                             ->searchable()
                             ->maxItems(3)
                             ->relationship('tags', 'name')
-                            ->getSearchResultsUsing(fn (string $search): array =>
-                                Tag::where('name', 'like', "%{$search}%")
+                            ->getSearchResultsUsing(
+                                fn (string $search): array => Tag::where('name', 'like', "%{$search}%")
                                     ->limit(50)
                                     ->pluck('name', 'id')
                                     ->toArray()
                             )
-                            ->getOptionLabelsUsing(fn (array $values): array =>
-                                Tag::whereIn('id', $values)->pluck('name', 'id')->toArray()
+                            ->getOptionLabelsUsing(
+                                fn (array $values): array => Tag::whereIn('id', $values)->pluck('name', 'id')->toArray()
                             ),
 
                         // 6. Combobox with prefix icon and custom placeholder
@@ -116,14 +116,14 @@ class PostResource extends Resource
                             ->searchingMessage('Looking for categories...')
                             ->loadingMessage('Fetching categories...')
                             ->searchDebounce(500)
-                            ->getSearchResultsUsing(fn (string $search): array =>
-                                Category::where('name', 'like', "%{$search}%")
+                            ->getSearchResultsUsing(
+                                fn (string $search): array => Category::where('name', 'like', "%{$search}%")
                                     ->limit(50)
                                     ->pluck('name', 'id')
                                     ->toArray()
                             )
-                            ->getOptionLabelUsing(fn ($value): ?string =>
-                                Category::find($value)?->name
+                            ->getOptionLabelUsing(
+                                fn ($value): ?string => Category::find($value)?->name
                             )
                             ->dehydrated(false),
                     ]),

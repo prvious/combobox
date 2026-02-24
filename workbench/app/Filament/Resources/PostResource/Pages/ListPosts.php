@@ -34,14 +34,14 @@ class ListPosts extends ListRecords
                         ->searchQuery('')
                         ->autoSearch()
                         ->preload()
-                        ->getSearchResultsUsing(fn (string $search): array =>
-                            Tag::where('name', 'like', "%{$search}%")
+                        ->getSearchResultsUsing(
+                            fn (string $search): array => Tag::where('name', 'like', "%{$search}%")
                                 ->limit(50)
                                 ->pluck('name', 'id')
                                 ->toArray()
                         )
-                        ->getOptionLabelsUsing(fn (array $values): array =>
-                            Tag::whereIn('id', $values)->pluck('name', 'id')->toArray()
+                        ->getOptionLabelsUsing(
+                            fn (array $values): array => Tag::whereIn('id', $values)->pluck('name', 'id')->toArray()
                         )
                         ->options(
                             Tag::pluck('name', 'id')->toArray()

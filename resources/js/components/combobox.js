@@ -158,13 +158,43 @@ class Combobox {
         this.searchInput = document.createElement('input')
         this.searchInput.className = 'fi-input prvious-combobox-unified-input'
         this.searchInput.type = 'text'
-        this.searchInput.setAttribute('aria-label', this.isSearchable ? 'Search' : 'Selection')
-        
+
+        if (this.isSearchable) {
+            this.searchInput.setAttribute('aria-label', 'Search')
+        } else {
+            this.searchInput.readOnly = true
+            this.searchInput.setAttribute('aria-label', 'Selected value')
+        }
+
+
         if (this.searchQuery) {
             this.searchInput.value = this.searchQuery
         }
 
         this.searchContainer.appendChild(this.searchInput)
+
+        if (!this.isMultiple && this.canSelectPlaceholder) {
+            this.clearButton = document.createElement('button')
+            this.clearButton.type = 'button'
+            this.clearButton.className = 'prvious-combobox-input-value-remove-btn'
+            this.clearButton.innerHTML =
+                '<svg class="fi-icon fi-size-sm" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'
+            this.clearButton.setAttribute('aria-label', 'Clear selection')
+            this.clearButton.style.display = 'none'
+            this.clearButton.addEventListener('click', (event) => {
+                event.stopPropagation()
+                this.selectOption('')
+            })
+            this.clearButton.addEventListener('keydown', (event) => {
+                if (event.key === ' ' || event.key === 'Enter') {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    this.selectOption('')
+                }
+            })
+            this.searchContainer.appendChild(this.clearButton)
+        }
+
         this.container.appendChild(this.searchContainer)
 
         this.updateSelectedDisplay()
@@ -522,6 +552,9 @@ class Combobox {
             // Clear any existing search when nothing is selected so the placeholder is visible
             this.searchQuery = ''
             this.searchInput.value = ''
+            if (this.clearButton) {
+                this.clearButton.style.display = 'none'
+            }
             return
         }
 
@@ -538,6 +571,10 @@ class Combobox {
             } else {
                 this.searchInput.placeholder = selectedLabel
             }
+        }
+
+        if (this.clearButton) {
+            this.clearButton.style.display = ''
         }
     }
 
@@ -726,45 +763,6 @@ class Combobox {
         return selectedLabel
     }
 
-    addSingleSelectionDisplay(selectedLabel, target = this.selectedDisplay) {
-        const labelContainer = document.createElement('span')
-        labelContainer.className = 'prvious-combobox-input-value-label'
-
-        if (this.isHtmlAllowed) {
-            labelContainer.innerHTML = selectedLabel
-        } else {
-            labelContainer.textContent = selectedLabel
-        }
-
-        target.appendChild(labelContainer)
-
-        if (!this.canSelectPlaceholder) {
-            return
-        }
-
-        const removeButton = document.createElement('button')
-        removeButton.type = 'button'
-        removeButton.className = 'prvious-combobox-input-value-remove-btn'
-        removeButton.innerHTML =
-            '<svg class="fi-icon fi-size-sm" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'
-        removeButton.setAttribute('aria-label', 'Clear selection')
-
-        removeButton.addEventListener('click', (event) => {
-            event.stopPropagation()
-            this.selectOption('')
-        })
-
-        removeButton.addEventListener('keydown', (event) => {
-            if (event.key === ' ' || event.key === 'Enter') {
-                event.preventDefault()
-                event.stopPropagation()
-                this.selectOption('')
-            }
-        })
-
-        target.appendChild(removeButton)
-    }
-
     getSelectedOptionLabel(value) {
         if (filled(this.labelRepository[value])) {
             return this.labelRepository[value]
@@ -933,15 +931,7 @@ class Combobox {
                                 this.labelRepository[this.state] = newLabel
                             }
 
-                            if (this.searchInput && (!this.searchQuery)) {
-                                if (this.isHtmlAllowed) {
-                                    const tempDiv = document.createElement('div')
-                                    tempDiv.innerHTML = newLabel
-                                    this.searchInput.placeholder = tempDiv.textContent || tempDiv.innerText || ''
-                                } else {
-                                    this.searchInput.placeholder = newLabel
-                                }
-                            }
+                            this.updateSelectedDisplay()
 
                             this.updateOptionLabelInList(this.state, newLabel)
                         } catch (error) {
@@ -1526,14 +1516,9 @@ class Combobox {
                 })
             }
 
-            if (!this.isMultiple && this.canSelectPlaceholder) {
-                const removeButton = this.container.querySelector(
-                    '.prvious-combobox-input-value-remove-btn',
-                )
-                if (removeButton) {
-                    removeButton.setAttribute('disabled', 'disabled')
-                    removeButton.classList.add('fi-disabled')
-                }
+            if (!this.isMultiple && this.canSelectPlaceholder && this.clearButton) {
+                this.clearButton.setAttribute('disabled', 'disabled')
+                this.clearButton.classList.add('fi-disabled')
             }
 
             if (this.isSearchable && this.searchInput) {
@@ -1553,14 +1538,9 @@ class Combobox {
                 })
             }
 
-            if (!this.isMultiple && this.canSelectPlaceholder) {
-                const removeButton = this.container.querySelector(
-                    '.prvious-combobox-input-value-remove-btn',
-                )
-                if (removeButton) {
-                    removeButton.removeAttribute('disabled')
-                    removeButton.classList.remove('fi-disabled')
-                }
+            if (!this.isMultiple && this.canSelectPlaceholder && this.clearButton) {
+                this.clearButton.removeAttribute('disabled')
+                this.clearButton.classList.remove('fi-disabled')
             }
 
             if (this.isSearchable && this.searchInput) {

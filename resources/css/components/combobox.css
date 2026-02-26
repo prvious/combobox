@@ -1,27 +1,47 @@
+/* Keep the 1px border ring on focus, suppress the colored 2px focus ring */
+.prvious-fo-combobox:focus-within {
+    --tw-ring-color: color-mix(in oklch, var(--gray-950), transparent 90%) !important;
+    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 1px var(--tw-ring-color) !important;
+}
+
+.dark .prvious-fo-combobox:focus-within {
+    --tw-ring-color: color-mix(in oklch, var(--white), transparent 80%) !important;
+}
+
+/* Clip children to the wrapper's rounded corners */
+.prvious-fo-combobox {
+    overflow: hidden;
+}
+
 .prvious-combobox-input-ctn {
     position: relative;
     width: 100%;
 }
 
+/* Hide badges container when nothing is selected */
 .prvious-combobox-input-value-ctn {
     display: flex;
     flex-wrap: wrap;
     gap: 0.375rem;
-    margin-bottom: 0.5rem;
+    padding: 0.375rem;
+    margin-bottom: 0;
+
+    &:empty {
+        display: none;
+    }
 }
 
 .prvious-combobox-input-search-ctn {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
 
     .prvious-combobox-search-icon {
         position: absolute;
         left: 0.75rem;
         display: flex;
         align-items: center;
-        color: rgb(var(--gray-400));
+        color: var(--gray-400);
         pointer-events: none;
         z-index: 10;
 
@@ -34,34 +54,65 @@
     .prvious-combobox-unified-input {
         width: 100%;
         padding-left: 2.5rem;
-        border: 1px solid rgb(var(--gray-300));
         border-radius: 0.5rem;
-        transition: border-color 150ms;
+        transition: border-color 150ms, background-color 150ms;
 
         &:focus {
-            border-color: rgb(var(--primary-600));
-            outline: 2px solid rgba(var(--primary-600), 0.2);
-            outline-offset: 2px;
+            outline: none;
         }
     }
+}
+
+/* Clear button inside the search container */
+.prvious-combobox-input-search-ctn .prvious-combobox-input-value-remove-btn {
+    position: absolute;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Border-top on search when badges are above (multi-select with selections) */
+.prvious-combobox-input-value-ctn:not(:empty) + .prvious-combobox-input-search-ctn {
+    border-top: 1px solid var(--gray-200);
+    padding-top: 0.5rem;
+    margin-top: 0;
+}
+
+/* Border-bottom on search when options with items are visible below */
+.prvious-combobox-input-search-ctn:has(+ .prvious-combobox-options-wrapper > ul:not(:empty)) {
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 0.5rem;
+}
+
+/* Also show border when a message (e.g. "No options match") is visible below */
+.prvious-combobox-input-search-ctn:has(+ .prvious-combobox-options-wrapper > .prvious-combobox-input-message) {
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 0.5rem;
 }
 
 .dark {
     .prvious-combobox-input-search-ctn {
         .prvious-combobox-search-icon {
-            color: rgb(var(--gray-500));
+            color: var(--gray-500);
         }
 
         .prvious-combobox-unified-input {
-            border-color: rgb(var(--gray-600));
-            background-color: rgb(var(--gray-900));
-
             &:focus {
-                border-color: rgb(var(--primary-500));
-                outline: 2px solid rgba(var(--primary-500), 0.2);
-                outline-offset: 2px;
+                outline: none;
             }
         }
+    }
+
+    .prvious-combobox-input-value-ctn:not(:empty) + .prvious-combobox-input-search-ctn {
+        border-top-color: var(--gray-700);
+    }
+
+    .prvious-combobox-input-search-ctn:has(+ .prvious-combobox-options-wrapper > ul:not(:empty)) {
+        border-bottom-color: var(--gray-700);
+    }
+
+    .prvious-combobox-input-search-ctn:has(+ .prvious-combobox-options-wrapper > .prvious-combobox-input-message) {
+        border-bottom-color: var(--gray-700);
     }
 }
 
@@ -69,9 +120,11 @@
     max-height: 15rem;
     overflow-y: auto;
     background: white;
-    border: 1px solid rgb(var(--gray-200));
-    border-radius: 0.5rem;
     padding: 0.25rem;
+
+    &:has(> ul:empty) {
+        display: none;
+    }
 
     &::-webkit-scrollbar {
         width: 0.5rem;
@@ -82,41 +135,40 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background: rgb(var(--gray-300));
+        background: var(--gray-300);
         border-radius: 0.25rem;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background: rgb(var(--gray-400));
+        background: var(--gray-400);
     }
 }
 
 .dark .prvious-combobox-options-wrapper {
-    background: rgb(var(--gray-900));
-    border-color: rgb(var(--gray-700));
+    background: var(--gray-900);
 
     &::-webkit-scrollbar-thumb {
-        background: rgb(var(--gray-600));
+        background: var(--gray-600);
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background: rgb(var(--gray-500));
+        background: var(--gray-500);
     }
 }
 
 .prvious-combobox-input-message {
     padding: 0.75rem;
     text-align: center;
-    color: rgb(var(--gray-500));
+    color: var(--gray-500);
     font-size: 0.875rem;
 }
 
 .prvious-combobox-input-placeholder {
-    color: rgb(var(--gray-400));
+    color: var(--gray-400);
 }
 
 .dark .prvious-combobox-input-placeholder {
-    color: rgb(var(--gray-500));
+    color: var(--gray-500);
 }
 
 .prvious-combobox-input-value-badges-ctn {
@@ -140,15 +192,37 @@
     transition: background-color 150ms;
 
     &:hover {
-        background: rgb(var(--gray-100));
+        background: var(--gray-100);
     }
 
     &:focus {
-        outline: 2px solid rgb(var(--primary-500));
+        outline: 2px solid var(--primary-500);
         outline-offset: 2px;
     }
 }
 
 .dark .prvious-combobox-input-value-remove-btn:hover {
-    background: rgb(var(--gray-800));
+    background: var(--gray-800);
+}
+
+/* Selected checkmark indicator */
+.prvious-combobox-input-option[aria-selected="true"]::after {
+    content: "";
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: auto;
+    background-color: var(--primary-600);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+}
+
+.dark .prvious-combobox-input-option[aria-selected="true"]::after {
+    background-color: var(--primary-500);
 }

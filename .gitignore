@@ -13,3 +13,5 @@ phpstan.neon
 testbench.yaml
 vendor
 .pnpm-store
+
+docs/plans

@@ -56,5 +56,8 @@ jobs:
       - name: Install Playwright
         run: pnpm add playwright && pnpm exec playwright install chromium
 
+      - name: Set up Filament assets
+        run: php vendor/bin/testbench filament:assets
+
       - name: Execute tests
         run: vendor/bin/pest --ci

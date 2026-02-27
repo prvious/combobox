@@ -48,8 +48,13 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Install Playwright
-        run: npm install playwright && npx playwright install chromium
+        run: pnpm add playwright && pnpm exec playwright install chromium
 
       - name: Execute tests
         run: vendor/bin/pest --ci

@@ -46,6 +46,11 @@ class BrowserTestCase extends Orchestra
         ];
     }
 
+    protected function getEnvironmentSetUp($app): void
+    {
+        $app['config']->set('app.key', 'base64:' . base64_encode(str_repeat('a', 32)));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

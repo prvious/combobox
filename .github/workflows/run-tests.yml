@@ -43,5 +43,13 @@ jobs:
       - name: List Installed Dependencies
         run: composer show -D
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: npm install playwright && npx playwright install chromium
+
       - name: Execute tests
         run: vendor/bin/pest --ci

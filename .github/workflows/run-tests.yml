@@ -43,5 +43,21 @@ jobs:
       - name: List Installed Dependencies
         run: composer show -D
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Playwright
+        run: pnpm add playwright && pnpm exec playwright install chromium
+
+      - name: Set up Filament assets
+        run: php vendor/bin/testbench filament:assets
+
       - name: Execute tests
         run: vendor/bin/pest --ci

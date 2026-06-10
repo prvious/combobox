@@ -63,7 +63,9 @@ it('searches server-side and selects a result', function () {
         ->wait(3)
         ->assertSeeIn(comboboxOptions('category_id'), 'Technology')
         ->click(comboboxOption('category_id', '1'))
-        ->assertAttribute(comboboxInput('category_id'), 'placeholder', 'Technology');
+        ->assertValue(comboboxInput('category_id'), 'Tech')
+        ->assertAttribute(comboboxOption('category_id', '1'), 'aria-selected', 'true')
+        ->assertSeeIn(comboboxOptions('category_id'), 'Technology');
 });
 
 // ---------------------------------------------------------------------------
@@ -212,6 +214,21 @@ it('filters static options by search query', function () {
     $page->click(comboboxInput('status'))
         ->assertSeeIn(comboboxOptions('status'), 'Draft')
         ->typeSlowly(comboboxInput('status'), 'pub')
+        ->assertVisible(comboboxOption('status', 'published'))
+        ->assertMissing(comboboxOption('status', 'draft'))
+        ->assertMissing(comboboxOption('status', 'review'))
+        ->assertMissing(comboboxOption('status', 'archived'));
+});
+
+it('preserves the search query and filtered options after selecting a static result', function () {
+    $page = visit('/admin/posts/create');
+
+    $page->click(comboboxInput('status'))
+        ->typeSlowly(comboboxInput('status'), 'pub')
+        ->assertVisible(comboboxOption('status', 'published'))
+        ->click(comboboxOption('status', 'published'))
+        ->assertValue(comboboxInput('status'), 'pub')
+        ->assertAttribute(comboboxOption('status', 'published'), 'aria-selected', 'true')
         ->assertVisible(comboboxOption('status', 'published'))
         ->assertMissing(comboboxOption('status', 'draft'))
         ->assertMissing(comboboxOption('status', 'review'))

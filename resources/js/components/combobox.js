@@ -1347,11 +1347,15 @@ class Combobox {
 
         if (!this.isMultiple) {
             this.state = value
-            this.searchQuery = ''
-            if (this.searchInput) {
-                this.searchInput.value = ''
+
+            if (blank(value)) {
+                this.searchQuery = ''
+                if (this.searchInput) {
+                    this.searchInput.value = ''
+                }
+                this.options = JSON.parse(JSON.stringify(this.originalOptions))
             }
-            this.options = JSON.parse(JSON.stringify(this.originalOptions))
+
             this.updateSelectedDisplay()
             this.renderOptions()
             this.onStateChange(this.state)

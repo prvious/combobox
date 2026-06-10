@@ -20,6 +20,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use Prvious\Filament\Combobox\ComboboxServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Workbench\App\Providers\WorkbenchServiceProvider;
+use Workbench\Database\Seeders\DatabaseSeeder;
 
 class BrowserTestCase extends Orchestra
 {
@@ -71,6 +72,6 @@ class BrowserTestCase extends Orchestra
 
     protected function defineDatabaseSeeders(): void
     {
-        $this->seed(\Workbench\Database\Seeders\DatabaseSeeder::class);
+        $this->seed(DatabaseSeeder::class);
     }
 }
